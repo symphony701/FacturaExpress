@@ -3,39 +3,38 @@
     <v-row justify="center">
       <v-col cols="7">
         <v-row justify="center">
-          <h1>FacturaXpress</h1>
-        </v-row>
-        <v-row justify="center">
-          <v-col cols="8">
-            <v-text-field
-              class="inputs-login"
-              label="Usuario"
-              hide-details="auto"
-              dark
-            ></v-text-field>
-          </v-col>
-        </v-row>
-        <v-row justify="center">
-          <v-col cols="8">
-            <v-text-field
-              class="inputs-login"
-              label="Contraseña"
-              hide-details="auto"
-              dark
-            ></v-text-field>
+          <v-col class="d-flex justify-center">
+            <h1>FacturaXpress</h1>
           </v-col>
         </v-row>
         <v-row justify="center">
           <v-col class="d-flex justify-center">
-            <v-btn to="/menu" color="#FDFFFC" elevation="4" large
-              >Iniciar Sesión</v-btn
+            <h2>Hola usuario, ¿Qué deseas realizar?</h2>
+          </v-col>
+        </v-row>
+        <v-row justify="center">
+          <v-col class="d-flex justify-center">
+            <v-btn color="#FDFFFC" elevation="4" large to="cartera"
+              >Cartera de descuento de factura</v-btn
             >
           </v-col>
         </v-row>
         <v-row justify="center">
           <v-col class="d-flex justify-center">
-            <v-btn to="/register" color="#FDFFFC" elevation="4" large
-              >Registrarse</v-btn
+            <v-btn color="#FDFFFC" elevation="4" large to="historial"
+              >Historial de facturas</v-btn
+            >
+          </v-col>
+        </v-row>
+        <v-row justify="center">
+          <v-col class="d-flex justify-center">
+            <v-btn color="#FDFFFC" elevation="4" large>¿Necesitas ayuda?</v-btn>
+          </v-col>
+        </v-row>
+        <v-row justify="center">
+          <v-col class="d-flex justify-center">
+            <v-btn to="/" color="#FDFFFC" elevation="4" large
+              >Cerrar sesión</v-btn
             >
           </v-col>
         </v-row>
@@ -46,7 +45,7 @@
 
 <script>
 export default {
-  name: "Home",
+  name: "Menu",
 
   components: {},
 };

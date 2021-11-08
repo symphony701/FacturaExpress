@@ -9,8 +9,19 @@
           <v-col cols="8">
             <v-text-field
               class="inputs-login"
-              label="Usuario"
+              label="Nombre"
               hide-details="auto"
+              dark
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row justify="center">
+          <v-col cols="8">
+            <v-text-field
+              class="inputs-login"
+              label="Correo"
+              hide-details="auto"
+              type="email"
               dark
             ></v-text-field>
           </v-col>
@@ -21,20 +32,25 @@
               class="inputs-login"
               label="Contraseña"
               hide-details="auto"
+              type="password"
+              dark
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row justify="center">
+          <v-col cols="8">
+            <v-text-field
+              class="inputs-login"
+              label="Repetir Contraseña"
+              hide-details="auto"
+              type="password"
               dark
             ></v-text-field>
           </v-col>
         </v-row>
         <v-row justify="center">
           <v-col class="d-flex justify-center">
-            <v-btn to="/menu" color="#FDFFFC" elevation="4" large
-              >Iniciar Sesión</v-btn
-            >
-          </v-col>
-        </v-row>
-        <v-row justify="center">
-          <v-col class="d-flex justify-center">
-            <v-btn to="/register" color="#FDFFFC" elevation="4" large
+            <v-btn to="/" color="#FDFFFC" elevation="4" large
               >Registrarse</v-btn
             >
           </v-col>
@@ -46,7 +62,7 @@
 
 <script>
 export default {
-  name: "Home",
+  name: "Register",
 
   components: {},
 };

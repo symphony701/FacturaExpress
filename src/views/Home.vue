@@ -12,6 +12,7 @@
               label="Usuario"
               hide-details="auto"
               dark
+              v-model="user"
             ></v-text-field>
           </v-col>
         </v-row>
@@ -22,12 +23,13 @@
               label="Contraseña"
               hide-details="auto"
               dark
+              v-model="password"
             ></v-text-field>
           </v-col>
         </v-row>
         <v-row justify="center">
           <v-col class="d-flex justify-center">
-            <v-btn to="/menu" color="#FDFFFC" elevation="4" large
+            <v-btn color="#FDFFFC" elevation="4" large @click="validateLogin()"
               >Iniciar Sesión</v-btn
             >
           </v-col>
@@ -45,10 +47,21 @@
 </template>
 
 <script>
+import UserService from "./../services/UserService";
 export default {
   name: "Home",
-
+  data: () => ({
+    user: "",
+    password: "",
+  }),
   components: {},
+  methods: {
+    async validateLogin() {
+      if (this.user != "" && this.password != "") {
+        await UserService.login(this.user, this.password);
+      }
+    },
+  },
 };
 </script>
 <style scoped>

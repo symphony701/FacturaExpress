@@ -9,6 +9,8 @@
         <v-row justify="center">
           <v-col cols="11">
             <v-data-table
+              :headers="headers"
+              :items="facturas"
               :items-per-page="5"
               class="elevation-1"
             ></v-data-table>
@@ -25,10 +27,47 @@
 </template>
 
 <script>
+import FacturaService from "./../services/FacturaService";
 export default {
   name: "Historial",
-
+  data: () => ({
+    headers: [
+      {
+        text: "Id:",
+        value: "CFactura",
+      },
+      { text: "F. de emisión:", value: "DFechaEmision" },
+      { text: "F. de Pago:", value: "DFechaPago" },
+      { text: "Monto:", value: "NumMonto" },
+      { text: "Moneda:", value: "NMoneda" },
+      { text: "TEA:", value: "NumTEA" },
+      { text: "TED:", value: "NumTED" },
+      { text: "D360:", value: "NumD360" },
+      { text: "Descuento:", value: "NumDescuento" },
+      { text: "V. Neto:", value: "NumVNeto" },
+      { text: "V. Recibido:", value: "NumVRecibido" },
+      { text: "V. Entregado:", value: "NumVEntregado" },
+      { text: "V. Recibido Total:", value: "NumVRecibidoTotal" },
+      { text: "TCEA:", value: "NumTCEA" },
+      { text: "TCEA Total:", value: "NumTCEATotal" },
+      { text: "Motivo:", value: "NMotivo" },
+    ],
+    facturas: [],
+  }),
   components: {},
+  mounted: async function () {
+    if (
+      this.$store.state.userName == null ||
+      this.$store.state.userId == null
+    ) {
+      this.$router.push("/");
+    } else {
+      const response = await FacturaService.getAllFacturasByUser(
+        this.$store.state.userId
+      );
+      this.facturas = response;
+    }
+  },
 };
 </script>
 <style scoped>

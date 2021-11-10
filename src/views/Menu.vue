@@ -9,7 +9,7 @@
         </v-row>
         <v-row justify="center">
           <v-col class="d-flex justify-center">
-            <h2>Hola usuario, ¿Qué deseas realizar?</h2>
+            <h2>Hola {{ nombreUsuario }}, ¿Qué deseas realizar?</h2>
           </v-col>
         </v-row>
         <v-row justify="center">
@@ -46,8 +46,21 @@
 <script>
 export default {
   name: "Menu",
+  data: () => ({
+    nombreUsuario: "",
+  }),
 
   components: {},
+  mounted: async function () {
+    if (
+      this.$store.state.userName == null ||
+      this.$store.state.userId == null
+    ) {
+      this.$router.push("/");
+    } else {
+      this.nombreUsuario = this.$store.state.userName;
+    }
+  },
 };
 </script>
 <style scoped>

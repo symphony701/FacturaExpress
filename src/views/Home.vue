@@ -23,6 +23,7 @@
               label="Contraseña"
               hide-details="auto"
               dark
+              type="password"
               v-model="password"
             ></v-text-field>
           </v-col>
@@ -58,7 +59,12 @@ export default {
   methods: {
     async validateLogin() {
       if (this.user != "" && this.password != "") {
-        await UserService.login(this.user, this.password);
+        const response = await UserService.login(this.user, this.password);
+        if (response.data.length != 0) {
+          this.$store.state.userName = response.data.at(0).NUsuario;
+          this.$store.state.userId = response.data.at(0).CUsuario;
+          this.$router.push("/menu");
+        }
       }
     },
   },

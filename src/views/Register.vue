@@ -12,6 +12,7 @@
               label="Nombre"
               hide-details="auto"
               dark
+              v-model="user"
             ></v-text-field>
           </v-col>
         </v-row>
@@ -23,6 +24,7 @@
               hide-details="auto"
               type="email"
               dark
+              v-model="email"
             ></v-text-field>
           </v-col>
         </v-row>
@@ -34,6 +36,7 @@
               hide-details="auto"
               type="password"
               dark
+              v-model="password"
             ></v-text-field>
           </v-col>
         </v-row>
@@ -45,12 +48,13 @@
               hide-details="auto"
               type="password"
               dark
+              v-model="rpassword"
             ></v-text-field>
           </v-col>
         </v-row>
         <v-row justify="center">
           <v-col class="d-flex justify-center">
-            <v-btn to="/" color="#FDFFFC" elevation="4" large
+            <v-btn @click="registerUser" color="#FDFFFC" elevation="4" large
               >Registrarse</v-btn
             >
           </v-col>
@@ -61,10 +65,34 @@
 </template>
 
 <script>
+import UserService from "./../services/UserService";
 export default {
   name: "Register",
-
+  data: () => ({
+    user: "",
+    email: "",
+    password: "",
+    rpassword: "",
+  }),
   components: {},
+  methods: {
+    async registerUser() {
+      if (
+        this.user != "" &&
+        this.email != "" &&
+        this.password != "" &&
+        this.rpassword != "" &&
+        this.password == this.rpassword
+      ) {
+        const response = await UserService.register(
+          this.user,
+          this.email,
+          this.password
+        );
+        this.$router.push("/");
+      }
+    },
+  },
 };
 </script>
 <style scoped>

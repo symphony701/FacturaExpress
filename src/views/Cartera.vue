@@ -61,12 +61,18 @@
                       label="Días por año"
                       dark
                       outlined
+                      :items="diasPorYear"
+                      v-model="diasPorYearModel"
                     ></v-select>
                   </v-col>
                 </v-row>
                 <v-row justify="space-around">
                   <v-col class="d-flex start" cols="11">
-                    <v-btn to="/" color="#FDFFFC" elevation="4" large
+                    <v-btn
+                      @click="crearCartera()"
+                      color="#FDFFFC"
+                      elevation="4"
+                      large
                       >Crear Cartera</v-btn
                     ></v-col
                   >
@@ -274,7 +280,18 @@ export default {
       .substr(0, 10),
     menu1: false,
     menu2: false,
+    //Cartera data
+    diasPorYearModel: "",
+    diasPorYear: [
+      { text: "360 dias", value: 360 },
+      { text: "365 dias", value: 365 },
+    ],
   }),
+  methods: {
+    async crearCartera() {
+      console.log(this.diasPorYearModel);
+    },
+  },
 };
 </script>
 <style >

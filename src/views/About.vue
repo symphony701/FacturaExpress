@@ -65,11 +65,11 @@
           <p>
             Al igual que para crear una cuenta en la aplicación no se realiza
             ningún pago, para utilizar todos los servicios que te brindamos
-            tamopoco se debe realizar algún tipo de pago. Nuestros servicios son
+            tampoco se debe realizar algún tipo de pago. Nuestros servicios son
             gratuitos.
           </p>
         </v-row>
-        <v-row justify="start">
+        <v-row justify="center">
           <h5>Copyright&copy; 2021 - Todos los derechos reservados</h5>
         </v-row>
       </v-col>

@@ -8,5 +8,11 @@ class FacturaService {
         const response = await axios.get(`${this.BasePath}/factura/user/${userId}`);
         return response.data;
     }
+    async addFacturas(facturasArray) {
+        for (let factura of facturasArray) {
+            const res = await axios.post(`${this.BasePath}/factura`, factura);
+        }
+        return "Success!";
+    }
 }
 export default new FacturaService();

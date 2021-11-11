@@ -19,13 +19,22 @@
               <v-col cols="10" class="justify-center">
                 <v-row justify="space-around">
                   <v-col cols="3">
-                    <v-select dense dark label="Tasa:" outlined></v-select>
+                    <v-select
+                      dense
+                      dark
+                      label="Tasa:"
+                      outlined
+                      :items="tasaOptions"
+                      v-model="tasaModel"
+                    ></v-select>
                   </v-col>
                   <v-col cols="3">
                     <v-select
                       dense
                       dark
                       label="Plazo de tasa:"
+                      v-model="plazoTasaModel"
+                      :items="plazoTasaOptions"
                       outlined
                     ></v-select>
                   </v-col>
@@ -34,6 +43,7 @@
                       class="inputs-login"
                       label="Porcentaje de tasa (%):"
                       hide-details="auto"
+                      v-model="porcentajeTasa"
                       dark
                     ></v-text-field>
                   </v-col>
@@ -45,15 +55,38 @@
                       label="Período de Capitalización"
                       outlined
                       dark
+                      v-model="periodoCapitalizacionModel"
+                      :items="periodoCapitalizacionOptions"
                     ></v-select>
                   </v-col>
                   <v-col cols="3">
-                    <v-text-field
-                      class="inputs-login"
-                      label="Plazo (en días):"
-                      hide-details="auto"
+                    <v-menu
                       dark
-                    ></v-text-field>
+                      v-model="menu3"
+                      :close-on-content-click="false"
+                      :nudge-right="0"
+                      transition="scale-transition"
+                      offset-y
+                      min-width="auto"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          dark
+                          v-model="fechaDescuentoDate"
+                          label="Fecha de descuento"
+                          prepend-icon="mdi-calendar"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        dark
+                        v-model="fechaDescuentoDate"
+                        @input="menu3 = false"
+                        color="#EB124B"
+                      ></v-date-picker>
+                    </v-menu>
                   </v-col>
                   <v-col cols="3">
                     <v-select
@@ -69,6 +102,7 @@
                 <v-row justify="space-around">
                   <v-col class="d-flex start" cols="11">
                     <v-btn
+                      :disabled="buttonCrearCartera"
                       @click="crearCartera()"
                       color="#FDFFFC"
                       elevation="4"
@@ -93,7 +127,14 @@
               <v-col cols="10" class="justify-center">
                 <v-row justify="space-around">
                   <v-col cols="3">
-                    <v-select dense dark label="Motivo:" outlined></v-select>
+                    <v-select
+                      dense
+                      dark
+                      label="Motivo:"
+                      v-model="motivoModel"
+                      :items="motivoOptions"
+                      outlined
+                    ></v-select>
                   </v-col>
                   <v-col cols="4" class="d-flex justify-center">
                     <v-text-field
@@ -101,10 +142,18 @@
                       label="Valor:"
                       hide-details="auto"
                       dark
+                      v-model="valorCosto"
                       style="margin-right: 10px"
                     ></v-text-field>
                     <div style="width: 35%">
-                      <v-select dense dark label="Moneda:" outlined></v-select>
+                      <v-select
+                        dense
+                        dark
+                        label="Moneda:"
+                        v-model="modelMoneda"
+                        :items="monedaOptions"
+                        outlined
+                      ></v-select>
                     </div>
                   </v-col>
                 </v-row>
@@ -112,6 +161,7 @@
                   <v-col cols="10">
                     <v-data-table
                       :headers="headersCostes"
+                      :items="costosLocales"
                       :items-per-page="5"
                       class="elevation-1"
                     ></v-data-table>
@@ -119,8 +169,13 @@
                 </v-row>
                 <v-row justify="space-around">
                   <v-col class="d-flex start" cols="11">
-                    <v-btn to="/" color="#FDFFFC" elevation="4" large
-                      >Agregar</v-btn
+                    <v-btn
+                      :disabled="buttonCrearCosto"
+                      color="#FDFFFC"
+                      elevation="4"
+                      large
+                      @click="agregarCosto"
+                      >Agregar Costo</v-btn
                     ></v-col
                   >
                 </v-row>
@@ -206,13 +261,25 @@
                       style="margin-right: 10px"
                     ></v-text-field>
                     <div style="width: 35%">
-                      <v-select dense dark label="Moneda:" outlined></v-select>
+                      <v-select
+                        dense
+                        dark
+                        label="Moneda:"
+                        v-model="modelMonedaFactura"
+                        :items="monedaOptions"
+                        outlined
+                      ></v-select>
                     </div>
                   </v-col>
                 </v-row>
                 <v-row justify="center">
                   <v-col class="d-flex justify-center">
-                    <v-btn to="/" color="#FDFFFC" elevation="4" large
+                    <v-btn
+                      :disabled="buttonCrearFactura"
+                      color="#FDFFFC"
+                      elevation="4"
+                      large
+                      @click="agregarFactura()"
                       >Crear Factura</v-btn
                     ></v-col
                   >
@@ -220,7 +287,8 @@
                 <v-row justify="space-around">
                   <v-col cols="12">
                     <v-data-table
-                      :headers="headersCostes"
+                      :headers="headersFactura"
+                      :items="facturasLocales"
                       :items-per-page="5"
                       class="elevation-1"
                     ></v-data-table>
@@ -228,12 +296,20 @@
                 </v-row>
                 <v-row justify="space-around">
                   <v-col class="d-flex justify-center" cols="3">
-                    <v-btn color="#FDFFFC" elevation="4" large
+                    <v-btn
+                      color="#FDFFFC"
+                      elevation="4"
+                      large
+                      :disabled="buttonResultado"
                       >Resultado</v-btn
                     ></v-col
                   >
                   <v-col class="d-flex justify-center" cols="3">
-                    <v-btn color="#FDFFFC" elevation="4" large
+                    <v-btn
+                      color="#FDFFFC"
+                      elevation="4"
+                      large
+                      :disabled="buttonLimpiar"
                       >Limpiar</v-btn
                     ></v-col
                   >
@@ -261,16 +337,26 @@
 </template>
 
 <script>
+import CarteraService from "./../services/CarteraService";
+import FacturaService from "./../services/FacturaService";
+import CostoService from "./../services/CostoService";
 export default {
   name: "Cartera",
   components: {},
   data: () => ({
+    buttonCrearCartera: false,
+    buttonCrearCosto: true,
+    buttonCrearFactura: true,
+    buttonResultado: true,
+    buttonLimpiar: true,
+    carteraNueva: null,
     headersCostes: [
       {
         text: "Motivo",
-        value: "motivoCosto",
+        value: "NMotivo",
       },
-      { text: "Valor:", value: "valorCosto" },
+      { text: "Moneda:", value: "NMoneda" },
+      { text: "Valor:", value: "NumMonto" },
     ],
     date1: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
       .toISOString()
@@ -278,18 +364,204 @@ export default {
     date2: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
       .toISOString()
       .substr(0, 10),
+    fechaDescuentoDate: new Date(
+      Date.now() - new Date().getTimezoneOffset() * 60000
+    )
+      .toISOString()
+      .substr(0, 10),
     menu1: false,
     menu2: false,
+    menu3: false,
     //Cartera data
+    //TASA Y PLAZO
     diasPorYearModel: "",
     diasPorYear: [
       { text: "360 dias", value: 360 },
       { text: "365 dias", value: 365 },
     ],
+    tasaModel: "",
+    tasaOptions: [
+      { text: "Nominal", value: "nominal" },
+      { text: "Efectiva", value: "efectiva" },
+      { text: "De descuento", value: "descuento" },
+    ],
+    plazoTasaModel: "",
+    plazoTasaOptions: [
+      { text: "Diario", value: "diario" },
+      { text: "Quincenal", value: "quincenal" },
+      { text: "Mensual", value: "mensual" },
+      { text: "Bimestral", value: "bimestral" },
+      { text: "Trimestral", value: "trimestral" },
+      { text: "Cuatrimestral", value: "cuatrimestral" },
+      { text: "Semestral", value: "semestral" },
+      { text: "Anual", value: "anual" },
+    ],
+    plazoTasaNum: 0,
+    porcentajeTasa: null,
+    periodoCapitalizacionModel: "",
+    periodoCapitalizacionOptions: [
+      { text: "Diario", value: "diario" },
+      { text: "Quincenal", value: "quincenal" },
+      { text: "Mensual", value: "mensual" },
+      { text: "Bimestral", value: "bimestral" },
+      { text: "Trimestral", value: "trimestral" },
+      { text: "Cuatrimestral", value: "cuatrimestral" },
+      { text: "Semestral", value: "semestral" },
+      { text: "Anual", value: "anual" },
+    ],
+    periodoCapitalizacionNum: 0,
+    //costes gastos database
+    motivoModel: "",
+    motivoOptions: [
+      { text: "Portes", value: "portes" },
+      { text: "Fotocopias", value: "fotocopia" },
+      { text: "Comisión de estudio", value: "comision_estudio" },
+      { text: "Comisión de intermediación", value: "comision_intermediacion" },
+      { text: "Gastos de administración", value: "gastos_administracion" },
+      { text: "Seguro", value: "seguro" },
+      { text: "Otros gastos", value: "otros" },
+    ],
+    valorCosto: 0,
+    modelMoneda: "",
+    monedaOptions: [
+      { text: "S/", value: "sol" },
+      { text: "$", value: "dolar" },
+    ],
+    costosLocales: [],
+    //factura
+    modelMonedaFactura: "",
+    headersFactura: [
+      {
+        text: "Id:",
+        value: "CFactura",
+      },
+      { text: "F. de emisión:", value: "DFechaEmision" },
+      { text: "F. de Pago:", value: "DFechaPago" },
+      { text: "Monto:", value: "NumMonto" },
+      { text: "Moneda:", value: "NMoneda" },
+      { text: "TEA:", value: "NumTEA" },
+      { text: "TED:", value: "NumTED" },
+      { text: "D360:", value: "NumD360" },
+      { text: "Descuento:", value: "NumDescuento" },
+      { text: "V. Neto:", value: "NumVNeto" },
+      { text: "V. Recibido:", value: "NumVRecibido" },
+      { text: "V. Entregado:", value: "NumVEntregado" },
+      { text: "V. Recibido Total:", value: "NumVRecibidoTotal" },
+      { text: "TCEA:", value: "NumTCEA" },
+      { text: "TCEA Total:", value: "NumTCEATotal" },
+      { text: "Motivo:", value: "NMotivo" },
+      { text: "Plazo descuento:", value: "NumPlazoDescuento" },
+    ],
+    facturasLocales: [],
   }),
+  mounted: async function () {
+    if (
+      this.$store.state.userName == null ||
+      this.$store.state.userId == null
+    ) {
+      this.$router.push("/");
+    }
+  },
   methods: {
     async crearCartera() {
-      console.log(this.diasPorYearModel);
+      switch (this.periodoCapitalizacionModel) {
+        case "diario":
+          this.periodoCapitalizacionNum = 1;
+          break;
+        case "quincenal":
+          this.periodoCapitalizacionNum = 15;
+          break;
+        case "mensual":
+          this.periodoCapitalizacionNum = 30;
+          break;
+        case "bimestral":
+          this.periodoCapitalizacionNum = 60;
+          break;
+        case "trimestral":
+          this.periodoCapitalizacionNum = 90;
+          break;
+        case "cuatrimestral":
+          this.periodoCapitalizacionNum = 120;
+          break;
+        case "semestral":
+          this.periodoCapitalizacionNum = 180;
+          break;
+        case "anual":
+          this.periodoCapitalizacionNum = parseInt(this.diasPorYearModel);
+          break;
+
+        default:
+          break;
+      }
+      switch (this.plazoTasaModel) {
+        case "diario":
+          this.plazoTasaNum = 1;
+          break;
+        case "quincenal":
+          this.plazoTasaNum = 15;
+          break;
+        case "mensual":
+          this.plazoTasaNum = 30;
+          break;
+        case "bimestral":
+          this.plazoTasaNum = 60;
+          break;
+        case "trimestral":
+          this.plazoTasaNum = 90;
+          break;
+        case "cuatrimestral":
+          this.plazoTasaNum = 120;
+          break;
+        case "semestral":
+          this.plazoTasaNum = 180;
+          break;
+        case "anual":
+          this.plazoTasaNum = parseInt(this.diasPorYearModel);
+          break;
+
+        default:
+          break;
+      }
+
+      const res = await CarteraService.addCartera(
+        this.$store.state.userId,
+        this.tasaModel,
+        parseFloat(this.porcentajeTasa),
+        this.plazoTasaModel,
+        this.plazoTasaNum,
+        parseInt(this.diasPorYearModel),
+        this.periodoCapitalizacionModel,
+        this.periodoCapitalizacionNum,
+        this.fechaDescuentoDate
+      );
+      this.carteraNueva = res;
+      this.buttonCrearCartera = true;
+      this.buttonCrearCosto = false;
+    },
+    async agregarCosto() {
+      if (
+        (this.motivoModel != "", this.valorCosto != "", this.modelMoneda != "")
+      ) {
+        //CostoService.addCosto(this.carteraNueva.CCartera,this.motivoModel,parseInt(this.valorCosto),this.modelMoneda)
+        this.costosLocales.push({
+          CCartera: this.carteraNueva.CCartera,
+          NMotivo: this.motivoModel,
+          NumMonto: parseInt(this.valorCosto),
+          NMoneda: this.modelMoneda,
+        });
+        this.buttonCrearFactura = false;
+      }
+    },
+    async agregarFactura() {
+      if (this.buttonCrearCosto == false) {
+        this.buttonCrearCosto = true;
+        const res = await CostoService.addCosto(this.costosLocales);
+      }
+      console.log(this.data1, this.data2, parseInt(this.modelMonedaFactura));
+      this.buttonResultado = false;
+    },
+    async resultado() {
+      this.buttonCrearFactura = true;
     },
   },
 };

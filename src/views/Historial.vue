@@ -51,6 +51,7 @@ export default {
       { text: "TCEA:", value: "NumTCEA" },
       { text: "TCEA Total:", value: "NumTCEATotal" },
       { text: "Motivo:", value: "NMotivo" },
+      { text: "Plazo descuento:", value: "NumPlazoDescuento" },
     ],
     facturas: [],
   }),

@@ -15,6 +15,7 @@ class UserService {
             "NContrasenia": password,
         }
         const res = await axios.post(`${this.BasePath}/user`, data);
+        return res.data
     }
 }
 export default new UserService();

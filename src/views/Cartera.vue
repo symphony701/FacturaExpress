@@ -258,6 +258,7 @@
                       label="Total facturado:"
                       hide-details="auto"
                       dark
+                      v-model="montoFactura"
                       style="margin-right: 10px"
                     ></v-text-field>
                     <div style="width: 35%">
@@ -301,6 +302,7 @@
                       elevation="4"
                       large
                       :disabled="buttonResultado"
+                      @click="resultado()"
                       >Resultado</v-btn
                     ></v-col
                   >
@@ -310,6 +312,7 @@
                       elevation="4"
                       large
                       :disabled="buttonLimpiar"
+                      @click="limpiar()"
                       >Limpiar</v-btn
                     ></v-col
                   >
@@ -321,10 +324,10 @@
                 </v-row>
                 <v-row justify="space-around">
                   <v-col class="d-flex justify-center" cols="3">
-                    <h2>Valor total a recibir: 0</h2>
+                    <h2>Valor total a recibir: {{ valorTotalARecibir }}</h2>
                   </v-col>
                   <v-col class="d-flex justify-center" cols="3">
-                    <h2>TCEA: 0</h2>
+                    <h2>TCEA: {{ valorTotalTCEA }}</h2>
                   </v-col>
                 </v-row>
               </v-col>
@@ -340,6 +343,7 @@
 import CarteraService from "./../services/CarteraService";
 import FacturaService from "./../services/FacturaService";
 import CostoService from "./../services/CostoService";
+import Operaciones from "./../services/Operaciones";
 export default {
   name: "Cartera",
   components: {},
@@ -383,7 +387,6 @@ export default {
     tasaOptions: [
       { text: "Nominal", value: "nominal" },
       { text: "Efectiva", value: "efectiva" },
-      { text: "De descuento", value: "descuento" },
     ],
     plazoTasaModel: "",
     plazoTasaOptions: [
@@ -431,28 +434,24 @@ export default {
     //factura
     modelMonedaFactura: "",
     headersFactura: [
-      {
-        text: "Id:",
-        value: "CFactura",
-      },
+      { text: "Plazo descuento:", value: "NumPlazoDescuento" },
       { text: "F. de emisión:", value: "DFechaEmision" },
       { text: "F. de Pago:", value: "DFechaPago" },
       { text: "Monto:", value: "NumMonto" },
       { text: "Moneda:", value: "NMoneda" },
-      { text: "TEA:", value: "NumTEA" },
-      { text: "TED:", value: "NumTED" },
-      { text: "D360:", value: "NumD360" },
+      { text: "TEA(%):", value: "NumTEA" },
+      { text: "TE(%):", value: "NumTED" },
+      { text: "d(%):", value: "NumD360" },
       { text: "Descuento:", value: "NumDescuento" },
       { text: "V. Neto:", value: "NumVNeto" },
       { text: "V. Recibido:", value: "NumVRecibido" },
       { text: "V. Entregado:", value: "NumVEntregado" },
-      { text: "V. Recibido Total:", value: "NumVRecibidoTotal" },
-      { text: "TCEA:", value: "NumTCEA" },
-      { text: "TCEA Total:", value: "NumTCEATotal" },
-      { text: "Motivo:", value: "NMotivo" },
-      { text: "Plazo descuento:", value: "NumPlazoDescuento" },
+      { text: "TCEA(%):", value: "NumTCEA" },
     ],
     facturasLocales: [],
+    montoFactura: 0,
+    valorTotalARecibir: 0,
+    valorTotalTCEA: 0,
   }),
   mounted: async function () {
     if (
@@ -546,7 +545,7 @@ export default {
         this.costosLocales.push({
           CCartera: this.carteraNueva.CCartera,
           NMotivo: this.motivoModel,
-          NumMonto: parseInt(this.valorCosto),
+          NumMonto: parseFloat(this.valorCosto),
           NMoneda: this.modelMoneda,
         });
         this.buttonCrearFactura = false;
@@ -557,11 +556,87 @@ export default {
         this.buttonCrearCosto = true;
         const res = await CostoService.addCosto(this.costosLocales);
       }
-      console.log(this.data1, this.data2, parseInt(this.modelMonedaFactura));
+      const NumTEA = Operaciones.NumTEA(
+        this.tasaModel,
+        parseFloat(this.porcentajeTasa),
+        this.plazoTasaNum,
+        this.periodoCapitalizacionNum
+      );
+      const NumPlazoDescuento = Operaciones.NumPlazoDescuento(
+        this.date2,
+        this.fechaDescuentoDate
+      );
+      const NumTed = Operaciones.NumTED(NumTEA, NumPlazoDescuento);
+
+      const NumD360 = Operaciones.NumD360(NumTed);
+
+      const NumDescuento = Operaciones.NumDescuento(
+        parseFloat(this.montoFactura),
+        NumD360
+      );
+
+      const NumVNeto = Operaciones.NumVNeto(
+        parseFloat(this.montoFactura),
+        NumDescuento
+      );
+
+      const NumVRecibido = Operaciones.NumVRecibido(
+        NumVNeto,
+        this.costosLocales,
+        0
+      );
+
+      const NumVEntregado = Operaciones.NumVEntregado(
+        parseFloat(this.montoFactura)
+      );
+
+      const NumTCEA = Operaciones.NumTCEA(
+        NumVEntregado,
+        NumVRecibido,
+        parseInt(this.diasPorYearModel),
+        NumPlazoDescuento
+      );
+
+      this.facturasLocales.push({
+        DFechaEmision: this.date1,
+        DFechaPago: this.date2,
+        NumMonto: parseFloat(this.montoFactura),
+        NMoneda: this.modelMonedaFactura,
+        CCartera: this.carteraNueva.CCartera,
+        NumTEA: NumTEA,
+        NumTED: NumTed,
+        NumD360: NumD360,
+        NumDescuento: NumDescuento,
+        NumVNeto: NumVNeto,
+        NumVRecibido: NumVRecibido,
+        NumVEntregado: NumVEntregado,
+        NumTCEA: NumTCEA,
+        NumPlazoDescuento: NumPlazoDescuento,
+      });
+
       this.buttonResultado = false;
     },
     async resultado() {
+      this.buttonLimpiar = true;
       this.buttonCrearFactura = true;
+
+      const res = await FacturaService.addFacturas(this.facturasLocales);
+
+      let aux = 0;
+      this.facturasLocales.forEach((factura) => {
+        aux = aux + factura.NumVRecibido;
+      });
+      this.valorTotalARecibir = aux;
+
+      let aux2 = 0;
+      this.facturasLocales.forEach((factura) => {
+        aux2 = aux2 + factura.NumTCEA;
+      });
+
+      this.valorTotalTCEA = aux2 / this.facturasLocales.length;
+    },
+    limpiar() {
+      console.log(this.date1, this.date2);
     },
   },
 };

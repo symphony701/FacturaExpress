@@ -10,6 +10,8 @@ class FacturaService {
     }
     async addFacturas(facturasArray) {
         for (let factura of facturasArray) {
+            console.log("Le enviare:")
+            console.log(factura)
             const res = await axios.post(`${this.BasePath}/factura`, factura);
         }
         return "Success!";

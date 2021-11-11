@@ -65,11 +65,6 @@
           </ul>
         </v-row>
         <v-row justify="start">
-          <h2>
-            ¿Qué puedo configurar al realizar el descuento de una factura?
-          </h2>
-        </v-row>
-        <v-row justify="start">
           <h2>¿Alguno de los servicios ofrecidos son de pago?</h2>
         </v-row>
         <v-row justify="start">

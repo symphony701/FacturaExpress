@@ -81,10 +81,7 @@
           </p>
         </v-row>
         <v-row justify="start">
-          <h5>
-            Copyright&copy; 2021 - App's Symphony/Johnny Roque - Todos los
-            derechos reservados
-          </h5>
+          <h5>Copyright&copy; 2021 - Todos los derechos reservados</h5>
         </v-row>
       </v-col>
     </v-row>

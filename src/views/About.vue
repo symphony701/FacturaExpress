@@ -29,13 +29,7 @@
             ¿Qué puedo configurar al realizar el descuento de una factura?
           </h2>
         </v-row>
-        <v-row justify="start">
-          <p>
-            Te permitimos configurar todo lo que necesites respecto a los datos
-            que te brinda el banco, los costos iniciales que te indican y los
-            datos de las facturas a las que les quieres realizar el descuento.
-          </p>
-        </v-row>
+
         <v-row justify="start">
           <p>
             Te permitimos configurar todo lo que necesites respecto a los datos

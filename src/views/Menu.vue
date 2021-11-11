@@ -28,7 +28,9 @@
         </v-row>
         <v-row justify="center">
           <v-col class="d-flex justify-center">
-            <v-btn color="#FDFFFC" elevation="4" large>¿Necesitas ayuda?</v-btn>
+            <v-btn color="#FDFFFC" elevation="4" to="/about" large
+              >¿Necesitas ayuda?</v-btn
+            >
           </v-col>
         </v-row>
         <v-row justify="center">

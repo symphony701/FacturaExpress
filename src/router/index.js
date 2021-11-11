@@ -5,6 +5,7 @@ import Register from '../views/Register.vue'
 import Menu from '../views/Menu.vue'
 import Cartera from '../views/Cartera.vue'
 import Historial from '../views/Historial.vue'
+import About from './../views/About.vue'
 
 Vue.use(VueRouter)
 
@@ -32,6 +33,11 @@ const routes = [{
         path: '/historial',
         name: 'Historial',
         component: Historial
+    },
+    {
+        path: '/about',
+        name: 'About',
+        component: About
     },
 
 ]

@@ -1,6 +1,6 @@
 import axios from 'axios';
 class UserService {
-    BasePath = 'http://localhost:3000'
+    BasePath = 'https://facturabackend.herokuapp.com'
     headers = {
         "Content-Type": "application/json; charset=UTF-8"
     }

@@ -317,7 +317,7 @@
                     ></v-col
                   >
                   <v-col class="d-flex justify-center" cols="3">
-                    <v-btn color="#FDFFFC" elevation="4" large
+                    <v-btn color="#FDFFFC" elevation="4" large to="/menu"
                       >Volver</v-btn
                     ></v-col
                   >

@@ -13,7 +13,13 @@
               :items="facturas"
               :items-per-page="5"
               class="elevation-1"
-            ></v-data-table>
+            >
+              <template v-slot:no-data>
+                <v-alert :value="true" color="error">
+                  Usted no posee facturas para mostrar
+                </v-alert>
+              </template>
+            </v-data-table>
           </v-col>
         </v-row>
         <v-row justify="center">

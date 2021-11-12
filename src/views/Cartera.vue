@@ -4,7 +4,27 @@
       <v-col>
         <v-row justify="center">
           <v-col cols="12" class="d-flex justify-center">
-            <h1>Cartera de facturas</h1>
+            <h1>Realizar cartera de descuento de facturas</h1>
+          </v-col>
+        </v-row>
+        <v-row justify="center">
+          <v-col cols="12" class="d-flex justify-center">
+            <v-btn
+              fab
+              dark
+              large
+              color="#41BEA6"
+              fixed
+              right
+              bottom
+              @click="
+                () => {
+                  dialog = true;
+                }
+              "
+            >
+              <v-icon>mdi-help</v-icon>
+            </v-btn>
           </v-col>
         </v-row>
         <!--seccion 1-->
@@ -13,6 +33,16 @@
             <v-row justify="start">
               <v-col cols="2">
                 <h2>Tasa y Plazo:</h2>
+              </v-col>
+            </v-row>
+            <v-row justify="center">
+              <v-col cols="10">
+                <p>
+                  Aquí debes ingresar los datos brindados por la entidad
+                  financiera consultada anteriormente. Todos los campos deben
+                  ser completados a excepción del período de capitalización que
+                  solo es necesario si la tasa elegida es nominal.
+                </p>
               </v-col>
             </v-row>
             <v-row justify="center">
@@ -26,6 +56,7 @@
                       outlined
                       :items="tasaOptions"
                       v-model="tasaModel"
+                      @change="changedSelect()"
                     ></v-select>
                   </v-col>
                   <v-col cols="3">
@@ -55,6 +86,7 @@
                       label="Período de Capitalización"
                       outlined
                       dark
+                      :disabled="selectPeriodoCapitalizacion"
                       v-model="periodoCapitalizacionModel"
                       :items="periodoCapitalizacionOptions"
                     ></v-select>
@@ -107,7 +139,7 @@
                       color="#FDFFFC"
                       elevation="4"
                       large
-                      >Crear Cartera</v-btn
+                      >Guardar datos</v-btn
                     ></v-col
                   >
                 </v-row>
@@ -121,6 +153,18 @@
             <v-row justify="start">
               <v-col cols="2">
                 <h2>Costes/Gastos Iniciales:</h2>
+              </v-col>
+            </v-row>
+            <v-row justify="center">
+              <v-col cols="10">
+                <p>
+                  Son los costes o gastos que deben pagarse al acreedor para
+                  realizar la operación, y que se descontarán del Valor Neto
+                  (diferencia entre el Valor Nominal y Descuento); estos montos
+                  afectarán al cálculo de la Tasa de Coste Efectivo Anual
+                  (T.C.E.A.). Si no hubiera costos o gastos, no tome en cuenta
+                  esta sección.
+                </p>
               </v-col>
             </v-row>
             <v-row justify="center">
@@ -189,6 +233,16 @@
             <v-row justify="start">
               <v-col cols="2">
                 <h2>Datos de la Factura:</h2>
+              </v-col>
+            </v-row>
+            <v-row justify="center">
+              <v-col cols="10">
+                <p>
+                  Debe ingresar los datos de cada factura emitida y agregarla a
+                  la cartera con el botón “Agregar factura”. Cuando termine de
+                  agregar todas las facturas a descontar, de clic en “Calcular
+                  descuento de facturas total”
+                </p>
               </v-col>
             </v-row>
             <v-row justify="center">
@@ -303,7 +357,7 @@
                       large
                       :disabled="buttonResultado"
                       @click="resultado()"
-                      >Resultado</v-btn
+                      >Calular descuento de facturas total</v-btn
                     ></v-col
                   >
                   <v-col class="d-flex justify-center" cols="3">
@@ -313,7 +367,7 @@
                       large
                       :disabled="buttonLimpiar"
                       @click="limpiar()"
-                      >Limpiar</v-btn
+                      >Eliminar última fatura</v-btn
                     ></v-col
                   >
                   <v-col class="d-flex justify-center" cols="3">
@@ -327,7 +381,87 @@
                     <h2>Valor total a recibir: {{ valorTotalARecibir }}</h2>
                   </v-col>
                   <v-col class="d-flex justify-center" cols="3">
-                    <h2>TCEA: {{ valorTotalTCEA }}</h2>
+                    <h2>TCEA(%): {{ valorTotalTCEA }}</h2>
+                  </v-col>
+                </v-row>
+                <v-row justify="space-around">
+                  <v-col class="d-flex justify-center" cols="3">
+                    <v-dialog v-model="dialog" width="500">
+                      <v-container class="dialog">
+                        <v-row>
+                          <v-col class="justify-center">
+                            <v-row justify="center">
+                              <v-col>
+                                <h2 style="text-align: center !important">
+                                  Diccionario de datos:
+                                </h2>
+                              </v-col>
+                            </v-row>
+                            <v-row justify="center">
+                              <v-col>
+                                <p style="text-align: start !important">
+                                  <b> <u>Tasa:</u> </b> representa si la tasa es
+                                  efectiva o nominal.<br />
+                                  <br />
+                                  <b> <u>Plazo de tasa:</u> </b> Representa al
+                                  tiempo en el que se expresa el plazo de la
+                                  tasa de interés dada como dato. <br />
+                                  <br />
+                                  <b> <u>Porcentaje de tasa:</u> </b> Tasa de
+                                  interés del periodo que está sujeta al
+                                  préstamo tomado como porcentaje <br />
+                                  <br />
+                                  <b> <u>Periodo de capitalización:</u> </b>
+                                  Válido solo si la tasa es Nominal. <br />
+                                  <br />
+                                  <b> <u>Fecha de descuento:</u> </b> Fecha en
+                                  la que se descontará el instrumento
+                                  financiero. <br />
+                                  <br />
+                                  <b> <u>Días por año:</u> </b> Tipo de
+                                  calendario con el que se realizarán los
+                                  cálculos. <br />
+                                  <br />
+                                  <b> <u>Motivo:</u> </b> El motivo de los
+                                  costes o gastos <br />
+                                  <br />
+                                  <b> <u>Valor de costes/gastos:</u> </b> Valor
+                                  de costes/gastos: Se coloca el monto cobrado
+                                  al final de la operación. <br />
+                                  <br />
+                                  Si no se genera ningún coste o gasto, debe
+                                  digitar 0 (cero). <br />
+                                  <br />
+                                  <b> <u>Fecha de emisión:</u> </b> Aquella
+                                  fecha donde se origina la factura. <br />
+                                  <br />
+                                  <b> <u>Fecha de pago:</u> </b> Aquella fecha
+                                  en la que vencerá el compromiso originado por
+                                  la factura y el cliente realizará la
+                                  cancelación. <br />
+                                  <br />
+                                  <b> <u>Total facturado:</u> </b> Valor por el
+                                  que ha girado la factura y cuyo compromiso
+                                  vence en la fecha de pago. <br />
+                                  <br />
+                                  <b> <u>Efectivo:</u> </b> Le permitimos hacer
+                                  cálculo con dinero en soles o dólares. Pero el
+                                  dinero a recibir se calculará y mostrará en
+                                  soles. <br />
+                                  <br />
+                                  <b> <u>TED:</u> </b> Tasa efectiva descontada.
+                                  <br />
+                                  <br />
+                                  <b> <u>d:</u> </b>
+                                  Tasa descontada o adelantada dado en
+                                  porcentaje.
+                                </p>
+                              </v-col>
+                            </v-row>
+                          </v-col>
+                        </v-row>
+                      </v-container>
+                    </v-dialog>
                   </v-col>
                 </v-row>
               </v-col>
@@ -354,6 +488,8 @@ export default {
     buttonResultado: true,
     buttonLimpiar: true,
     carteraNueva: null,
+    dialog: false,
+    selectPeriodoCapitalizacion: false,
     headersCostes: [
       {
         text: "Motivo",
@@ -427,8 +563,8 @@ export default {
     valorCosto: 0,
     modelMoneda: "",
     monedaOptions: [
-      { text: "S/", value: "sol" },
-      { text: "$", value: "dolar" },
+      { text: "S/", value: "Sol" },
+      { text: "$", value: "Dolar" },
     ],
     costosLocales: [],
     //factura
@@ -461,7 +597,17 @@ export default {
       this.$router.push("/");
     }
   },
+
   methods: {
+    changedSelect() {
+      if (this.tasaModel == "efectiva") {
+        this.selectPeriodoCapitalizacion = true;
+        this.periodoCapitalizacionModel = "diaria";
+      } else if (this.tasaModel == "nominal") {
+        this.selectPeriodoCapitalizacion = false;
+      }
+    },
+
     async crearCartera() {
       switch (this.periodoCapitalizacionModel) {
         case "diario":
@@ -580,7 +726,7 @@ export default {
         NumDescuento
       );
 
-      const NumVRecibido = Operaciones.NumVRecibido(
+      const NumVRecibido = await Operaciones.NumVRecibido(
         NumVNeto,
         this.costosLocales,
         0
@@ -619,6 +765,7 @@ export default {
     async resultado() {
       this.buttonLimpiar = true;
       this.buttonCrearFactura = true;
+      this.buttonResultado = true;
 
       const res = await FacturaService.addFacturas(this.facturasLocales);
 
@@ -626,7 +773,7 @@ export default {
       this.facturasLocales.forEach((factura) => {
         aux = aux + factura.NumVRecibido;
       });
-      this.valorTotalARecibir = aux;
+      this.valorTotalARecibir = parseFloat(aux.toFixed(2));
 
       let aux2 = 0;
       this.facturasLocales.forEach((factura) => {
@@ -659,5 +806,22 @@ export default {
 
 .v-picker__body {
   background: #051937 !important;
+}
+
+p {
+  color: white;
+  text-align: center;
+}
+
+.dialog {
+  /*background-image: linear-gradient(
+    to bottom,
+    #0f3369,
+    #56337e,
+    #95227c,
+    #ca0063,
+    #eb1238
+  );*/
+  background: #008c93;
 }
 </style>

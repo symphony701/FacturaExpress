@@ -1,4 +1,6 @@
+import axios from 'axios';
 class Operaciones {
+    apiConversiones = 'https://v6.exchangerate-api.com/v6/5848dcd0e4f789a68e485a94/latest/USD'
     NumPlazoDescuento(fechaPago, fechaDescuento) {
         let a = (new Date(fechaPago) - new Date(fechaDescuento)) * (1.1574074074074 * Math.pow(10, -8));
         return Math.round(a);
@@ -23,10 +25,17 @@ class Operaciones {
     NumVNeto(NumMonto, NumDescuento) {
         return parseFloat((NumMonto - NumDescuento).toFixed(2))
     }
-    NumVRecibido(NumVNeto, arrayCostos, costoAux) {
+    async NumVRecibido(NumVNeto, arrayCostos, costoAux) {
+        currencyres = await axios.get(this.apiConversiones)
+        currency = currencyres.conversion_rates.PEN;
+
         costoAux = 0;
         for (let costo of arrayCostos) {
-            costoAux = costoAux + costo.NumMonto
+            if (costo.NMoneda == "Sol") {
+                costoAux = costoAux + costo.NumMonto
+            } else {
+                costoAux = costoAux + (costo.NumMonto * currency)
+            }
         }
         return parseFloat((NumVNeto - parseFloat(costoAux)).toFixed(2))
     }

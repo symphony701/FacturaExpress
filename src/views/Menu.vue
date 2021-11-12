@@ -15,21 +15,21 @@
         <v-row justify="center">
           <v-col class="d-flex justify-center">
             <v-btn color="#FDFFFC" elevation="4" large to="cartera"
-              >Cartera de descuento de factura</v-btn
+              >Descontar cartera de facturas</v-btn
             >
           </v-col>
         </v-row>
         <v-row justify="center">
           <v-col class="d-flex justify-center">
             <v-btn color="#FDFFFC" elevation="4" large to="historial"
-              >Historial de facturas</v-btn
+              >Visualizar mis facturas descontadas</v-btn
             >
           </v-col>
         </v-row>
         <v-row justify="center">
           <v-col class="d-flex justify-center">
             <v-btn color="#FDFFFC" elevation="4" to="/about" large
-              >¿Necesitas ayuda?</v-btn
+              >Visualizar preguntas frecuentes</v-btn
             >
           </v-col>
         </v-row>

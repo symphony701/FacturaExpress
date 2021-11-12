@@ -3,7 +3,7 @@
     <v-row justify="center">
       <v-col cols="12">
         <v-row justify="center">
-          <h2>Historial</h2>
+          <h2>Facturas descontadas</h2>
         </v-row>
 
         <v-row justify="center">

@@ -4,7 +4,7 @@
       <v-col>
         <v-row justify="center">
           <v-col cols="12" class="d-flex justify-center">
-            <h1>Realizar cartera de descuento de facturas</h1>
+            <h1>Descontar facturas</h1>
           </v-col>
         </v-row>
         <v-row justify="center">
@@ -32,7 +32,7 @@
           <v-col cols="12" class="justify-center">
             <v-row justify="start">
               <v-col cols="2">
-                <h2>Tasa y Plazo:</h2>
+                <h2>Tasa y Plazo de la Entidad Financiera:</h2>
               </v-col>
             </v-row>
             <v-row justify="center">
@@ -335,7 +335,7 @@
                       elevation="4"
                       large
                       @click="agregarFactura()"
-                      >Crear Factura</v-btn
+                      >Agregar factura a la cartera</v-btn
                     ></v-col
                   >
                 </v-row>

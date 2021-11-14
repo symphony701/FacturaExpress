@@ -26,8 +26,8 @@ class Operaciones {
         return parseFloat((NumMonto - NumDescuento).toFixed(2))
     }
     async NumVRecibido(NumVNeto, arrayCostos, costoAux) {
-        currencyres = await axios.get(this.apiConversiones)
-        currency = currencyres.conversion_rates.PEN;
+        const currencyres = await axios.get(this.apiConversiones)
+        const currency = currencyres.data.conversion_rates.PEN;
 
         costoAux = 0;
         for (let costo of arrayCostos) {

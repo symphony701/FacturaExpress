@@ -564,7 +564,7 @@ export default {
     modelMoneda: "",
     monedaOptions: [
       { text: "S/", value: "Sol" },
-      { text: "$", value: "Dolar" },
+      { text: "$", value: "Dólar Americano" },
     ],
     costosLocales: [],
     //factura
@@ -702,6 +702,12 @@ export default {
         this.buttonCrearCosto = true;
         const res = await CostoService.addCosto(this.costosLocales);
       }
+
+      this.montoFactura = Operaciones.ConversorFactura(
+        this.montoFactura,
+        this.modelMonedaFactura
+      );
+
       const NumTEA = Operaciones.NumTEA(
         this.tasaModel,
         parseFloat(this.porcentajeTasa),

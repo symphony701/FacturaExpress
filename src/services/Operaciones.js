@@ -39,6 +39,17 @@ class Operaciones {
         }
         return parseFloat((NumVNeto - parseFloat(costoAux)).toFixed(2))
     }
+
+    async ConversorFactura(montoFactura, tipoMoneda) {
+        const currencyres = await axios.get(this.apiConversiones)
+        const currency = currencyres.data.conversion_rates.PEN;
+        if (tipoMoneda == "Sol") {
+            return montoFactura
+        } else {
+            return montoFactura * currency;
+        }
+    }
+
     NumVEntregado(NumMonto) {
         return NumMonto;
     }

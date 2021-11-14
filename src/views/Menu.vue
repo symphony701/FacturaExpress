@@ -15,7 +15,7 @@
         <v-row justify="center">
           <v-col class="d-flex justify-center">
             <v-btn color="#FDFFFC" elevation="4" large to="cartera"
-              >Descontar cartera de facturas</v-btn
+              >Descontar facturas</v-btn
             >
           </v-col>
         </v-row>

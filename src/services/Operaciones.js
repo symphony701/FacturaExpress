@@ -32,11 +32,11 @@ class Operaciones {
 
         costoAux = 0.0;
         for (let costo of arrayCostos) {
-            //if (costo.NMoneda == "Sol") {
-            costoAux = costoAux + costo.NumMonto
-                //} else {
-                //  costoAux = costoAux + (costo.NumMonto * currency)
-                //}
+            if (costo.NMoneda == "Sol") {
+                costoAux = costoAux + costo.NumMonto
+            } else {
+                costoAux = costoAux + (costo.NumMonto * currency)
+            }
         }
         return parseFloat((NumVNeto - parseFloat(costoAux)).toFixed(2))
     }

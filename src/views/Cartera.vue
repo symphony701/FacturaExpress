@@ -312,7 +312,7 @@
                       label="Total facturado:"
                       hide-details="auto"
                       dark
-                      v-model="montoFactura"
+                      v-model="valorFactura"
                       style="margin-right: 10px"
                     ></v-text-field>
                     <div style="width: 35%">
@@ -588,6 +588,7 @@ export default {
     montoFactura: 0,
     valorTotalARecibir: 0,
     valorTotalTCEA: 0,
+    valorFactura: 0,
   }),
   mounted: async function () {
     if (
@@ -703,8 +704,8 @@ export default {
         const res = await CostoService.addCosto(this.costosLocales);
       }
 
-      this.montoFactura = Operaciones.ConversorFactura(
-        this.montoFactura,
+      this.montoFactura = await Operaciones.ConversorFactura(
+        this.valorFactura,
         this.modelMonedaFactura
       );
 

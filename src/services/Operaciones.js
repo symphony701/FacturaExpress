@@ -27,15 +27,16 @@ class Operaciones {
     }
     async NumVRecibido(NumVNeto, arrayCostos, costoAux) {
         const currencyres = await axios.get(this.apiConversiones)
-        const currency = currencyres.data.conversion_rates.PEN;
+        let currency = currencyres.data.conversion_rates.PEN;
+        currency = parseFloat(currency.toFixed(2))
 
-        costoAux = 0;
+        costoAux = 0.0;
         for (let costo of arrayCostos) {
-            if (costo.NMoneda == "Sol") {
-                costoAux = costoAux + costo.NumMonto
-            } else {
-                costoAux = costoAux + (costo.NumMonto * currency)
-            }
+            //if (costo.NMoneda == "Sol") {
+            costoAux = costoAux + costo.NumMonto
+                //} else {
+                //  costoAux = costoAux + (costo.NumMonto * currency)
+                //}
         }
         return parseFloat((NumVNeto - parseFloat(costoAux)).toFixed(2))
     }
@@ -48,6 +49,7 @@ class Operaciones {
         } else {
             return montoFactura * currency;
         }
+
     }
 
     NumVEntregado(NumMonto) {

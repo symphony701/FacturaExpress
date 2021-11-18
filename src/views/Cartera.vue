@@ -786,8 +786,11 @@ export default {
       this.facturasLocales.forEach((factura) => {
         aux2 = aux2 + factura.NumTCEA;
       });
-
       this.valorTotalTCEA = aux2 / this.facturasLocales.length;
+
+      /*this.valorTotalTCEA = Operaciones.NumTCEATotal(
+        Operaciones.arregloFlujo(this.valorTotalARecibir, this.facturasLocales)
+      );*/
     },
     limpiar() {
       console.log(this.date1, this.date2);

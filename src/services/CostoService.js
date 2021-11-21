@@ -10,5 +10,12 @@ class CostoService {
         }
         return "Success"
     }
+
+    async addCostoF(arrayCostes) {
+        for (let coste of arrayCostes) {
+            const res = await axios.post(`${this.BasePath}/costo-inicial`, coste);
+        }
+        return "Success"
+    }
 }
 export default new CostoService();

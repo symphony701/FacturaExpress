@@ -162,8 +162,8 @@
                   realizar la operación, y que se descontarán del Valor Neto
                   (diferencia entre el Valor Nominal y Descuento); estos montos
                   afectarán al cálculo de la Tasa de Coste Efectivo Anual
-                  (T.C.E.A.). Si no hubiera costos o gastos, no tome en cuenta
-                  esta sección.
+                  (T.C.E.A.). Si no hubiera costos o gastos, digite 0 (cero)
+                  como valor del costo y cualquier motivo.
                 </p>
               </v-col>
             </v-row>
@@ -208,7 +208,13 @@
                       :items="costosLocales"
                       :items-per-page="5"
                       class="elevation-1"
-                    ></v-data-table>
+                    >
+                      <template v-slot:no-data>
+                        <v-alert :value="true" color="#ffffff">
+                          No hay costos que mostrar
+                        </v-alert>
+                      </template>
+                    </v-data-table>
                   </v-col>
                 </v-row>
                 <v-row justify="space-around">
@@ -219,6 +225,87 @@
                       elevation="4"
                       large
                       @click="agregarCosto"
+                      >Agregar Costo</v-btn
+                    ></v-col
+                  >
+                </v-row>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+        <v-row justify="center">
+          <v-col cols="12" class="justify-center">
+            <v-row justify="start">
+              <v-col cols="2">
+                <h2>Costes/Gastos Finales:</h2>
+              </v-col>
+            </v-row>
+            <v-row justify="center">
+              <v-col cols="10">
+                <p>
+                  Son la suma de costes/gastos cargados/abonados al instrumento
+                  en tiempo vencido o al final de la operación.
+                </p>
+              </v-col>
+            </v-row>
+            <v-row justify="center">
+              <v-col cols="10" class="justify-center">
+                <v-row justify="space-around">
+                  <v-col cols="3">
+                    <v-select
+                      dense
+                      dark
+                      label="Motivo:"
+                      v-model="motivoModelF"
+                      :items="motivoOptionsF"
+                      outlined
+                    ></v-select>
+                  </v-col>
+                  <v-col cols="4" class="d-flex justify-center">
+                    <v-text-field
+                      class="inputs-login"
+                      label="Valor:"
+                      hide-details="auto"
+                      dark
+                      v-model="valorCostoF"
+                      style="margin-right: 10px"
+                    ></v-text-field>
+                    <div style="width: 35%">
+                      <v-select
+                        dense
+                        dark
+                        label="Moneda:"
+                        v-model="modelMonedaF"
+                        :items="monedaOptions"
+                        outlined
+                      ></v-select>
+                    </div>
+                  </v-col>
+                </v-row>
+                <v-row justify="center">
+                  <v-col cols="10">
+                    <v-data-table
+                      :headers="headersCostes"
+                      :items="costosLocalesF"
+                      :items-per-page="5"
+                      class="elevation-1"
+                    >
+                      <template v-slot:no-data>
+                        <v-alert :value="true" color="#ffffff">
+                          No hay costos que mostrar
+                        </v-alert>
+                      </template>
+                    </v-data-table>
+                  </v-col>
+                </v-row>
+                <v-row justify="space-around">
+                  <v-col class="d-flex start" cols="11">
+                    <v-btn
+                      :disabled="buttonCrearCostoF"
+                      color="#FDFFFC"
+                      elevation="4"
+                      large
+                      @click="agregarCostoF"
                       >Agregar Costo</v-btn
                     ></v-col
                   >
@@ -346,7 +433,13 @@
                       :items="facturasLocales"
                       :items-per-page="5"
                       class="elevation-1"
-                    ></v-data-table>
+                    >
+                      <template v-slot:no-data>
+                        <v-alert :value="true" color="#ffffff">
+                          No hay facturas que mostrar
+                        </v-alert>
+                      </template>
+                    </v-data-table>
                   </v-col>
                 </v-row>
                 <v-row justify="space-around">
@@ -357,7 +450,7 @@
                       large
                       :disabled="buttonResultado"
                       @click="resultado()"
-                      >Calular descuento de facturas total</v-btn
+                      >Calcular descuento de facturas total</v-btn
                     ></v-col
                   >
                   <v-col class="d-flex justify-center" cols="3">
@@ -455,6 +548,32 @@
                                   <b> <u>d:</u> </b>
                                   Tasa descontada o adelantada dado en
                                   porcentaje.
+                                  <br />
+                                  <br />
+                                  <b> <u>Descuento:</u> </b>
+                                  Intereses adelantados que se descontarán del
+                                  valor neto.
+                                  <br />
+                                  <br />
+                                  <b> <u>Valor Neto:</u> </b>
+                                  Representa al valor del instrumento al momento
+                                  del descuento.
+                                  <br />
+                                  <br />
+                                  <b> <u>Valor Entregado:</u> </b>
+                                  Monto de dinero entregado en tiempo vencido.
+                                  <br />
+                                  <br />
+                                  <b> <u>Valor total a recibir:</u> </b>
+                                  Monto a recibir después de realizarle el
+                                  descuento a la factura o facturas.
+                                  <br />
+                                  <br />
+                                  <b> <u>TCEA:</u> </b>
+                                  Tasa de Costos Efectivo Anual. Tasa que
+                                  permite conocer el costo total a pagar dado en
+                                  porcentaje.
+                                  <br />
                                 </p>
                               </v-col>
                             </v-row>
@@ -484,6 +603,7 @@ export default {
   data: () => ({
     buttonCrearCartera: false,
     buttonCrearCosto: true,
+    buttonCrearCostoF: true,
     buttonCrearFactura: true,
     buttonResultado: true,
     buttonLimpiar: true,
@@ -551,6 +671,7 @@ export default {
     periodoCapitalizacionNum: 0,
     //costes gastos database
     motivoModel: "",
+    motivoModelF: "",
     motivoOptions: [
       { text: "Portes", value: "portes" },
       { text: "Fotocopias", value: "fotocopia" },
@@ -560,13 +681,21 @@ export default {
       { text: "Seguro", value: "seguro" },
       { text: "Otros gastos", value: "otros" },
     ],
+    motivoOptionsF: [
+      { text: "Portes", value: "portes" },
+      { text: "Gastos de administración", value: "gastos_administracion" },
+      { text: "Otros gastos", value: "otros" },
+    ],
     valorCosto: 0,
+    valorCostoF: 0,
     modelMoneda: "",
+    modelMonedaF: "",
     monedaOptions: [
       { text: "S/", value: "Sol" },
       { text: "$", value: "Dólar Americano" },
     ],
     costosLocales: [],
+    costosLocalesF: [],
     //factura
     modelMonedaFactura: "",
     headersFactura: [
@@ -695,13 +824,33 @@ export default {
           NumMonto: parseFloat(this.valorCosto),
           NMoneda: this.modelMoneda,
         });
+        //this.buttonCrearFactura = false;
+        this.buttonCrearCostoF = false;
+      }
+    },
+    async agregarCostoF() {
+      this.buttonCrearCosto = true;
+      if (
+        (this.motivoModelF != "",
+        this.valorCostoF != "",
+        this.modelMonedaF != "")
+      ) {
+        this.costosLocalesF.push({
+          CCartera: this.carteraNueva.CCartera,
+          NMotivo: this.motivoModelF,
+          NumMonto: parseFloat(this.valorCostoF),
+          NMoneda: this.modelMonedaF,
+        });
+
         this.buttonCrearFactura = false;
       }
     },
     async agregarFactura() {
-      if (this.buttonCrearCosto == false) {
-        this.buttonCrearCosto = true;
+      if (this.buttonCrearCostoF == false) {
+        //this.buttonCrearCosto = true;
+        this.buttonCrearCostoF = true;
         const res = await CostoService.addCosto(this.costosLocales);
+        const res2 = await CostoService.addCostoF(this.costosLocalesF);
       }
 
       this.montoFactura = await Operaciones.ConversorFactura(
@@ -739,8 +888,10 @@ export default {
         0
       );
 
-      const NumVEntregado = Operaciones.NumVEntregado(
-        parseFloat(this.montoFactura)
+      const NumVEntregado = await Operaciones.NumVEntregado(
+        parseFloat(this.montoFactura),
+        this.costosLocalesF,
+        0
       );
 
       const NumTCEA = Operaciones.NumTCEA(

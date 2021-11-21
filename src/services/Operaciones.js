@@ -52,11 +52,23 @@ class Operaciones {
 
     }
 
-    NumVEntregado(NumMonto) {
-        return NumMonto;
+    async NumVEntregado(NumMonto, arrayCostos, costoAux) {
+        const currencyres = await axios.get(this.apiConversiones)
+        let currency = currencyres.data.conversion_rates.PEN;
+        currency = parseFloat(currency.toFixed(2));
+        costoAux = 0.0;
+        for (let costo of arrayCostos) {
+            if (costo.NMoneda == "Sol") {
+                costoAux = costoAux + costo.NumMonto
+            } else {
+                costoAux = costoAux + (costo.NumMonto * currency)
+            }
+        }
+        return parseFloat((NumMonto + parseFloat(costoAux)).toFixed(2));
+
     }
-    NumTCEA(NumMonto, NumVRecibido, DiasXYear, NumPlazoDescuento) {
-        return parseFloat(((Math.pow((NumMonto / NumVRecibido), (DiasXYear / NumPlazoDescuento)) - 1) * 100).toFixed(7));
+    NumTCEA(NumVEntregado, NumVRecibido, DiasXYear, NumPlazoDescuento) {
+        return parseFloat(((Math.pow((NumVEntregado / NumVRecibido), (DiasXYear / NumPlazoDescuento)) - 1) * 100).toFixed(7));
 
     }
 

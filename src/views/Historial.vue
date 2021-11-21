@@ -15,8 +15,8 @@
               class="elevation-1"
             >
               <template v-slot:no-data>
-                <v-alert :value="true" color="error">
-                  Usted no posee facturas para mostrar
+                <v-alert :value="true" color="#ffffff">
+                  Usted no ha descontado ninguna factura todavía
                 </v-alert>
               </template>
             </v-data-table>

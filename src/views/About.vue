@@ -69,8 +69,21 @@
             gratuitos.
           </p>
         </v-row>
+        <br />
+        <v-row justify="start">
+          <h3>
+            Si todavía no encuentras respuesta a tus consultas, por favor
+            escribirnos a nuestro correo o llámanos a los siguientes números:
+          </h3>
+          <p style="text-aling: initial !important">
+            Correo de soporte: soporte@facturaxpress.com.pe<br />
+            Tel: +51 1 54875413 / +51 1 6548911 / +51 1 6548132
+          </p>
+        </v-row>
         <v-row justify="center">
-          <h5>Copyright&copy; 2021 - Todos los derechos reservados</h5>
+          <h5>
+            FacturaXpress Copyright&copy; 2021 - Todos los derechos reservados
+          </h5>
         </v-row>
       </v-col>
     </v-row>
@@ -96,6 +109,7 @@ export default {
 }
 p {
   margin-bottom: 20px !important;
+  text-align: initial !important;
 }
 h2 {
   font-family: "Dongle";

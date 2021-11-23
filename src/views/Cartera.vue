@@ -453,16 +453,7 @@
                       >Calcular descuento de facturas total</v-btn
                     ></v-col
                   >
-                  <v-col class="d-flex justify-center" cols="3">
-                    <v-btn
-                      color="#FDFFFC"
-                      elevation="4"
-                      large
-                      :disabled="buttonLimpiar"
-                      @click="limpiar()"
-                      >Eliminar última fatura</v-btn
-                    ></v-col
-                  >
+
                   <v-col class="d-flex justify-center" cols="3">
                     <v-btn color="#FDFFFC" elevation="4" large to="/menu"
                       >Volver</v-btn
@@ -597,6 +588,7 @@ import CarteraService from "./../services/CarteraService";
 import FacturaService from "./../services/FacturaService";
 import CostoService from "./../services/CostoService";
 import Operaciones from "./../services/Operaciones";
+import Swal from "sweetalert2";
 export default {
   name: "Cartera",
   components: {},
@@ -739,84 +731,121 @@ export default {
     },
 
     async crearCartera() {
-      switch (this.periodoCapitalizacionModel) {
-        case "diario":
-          this.periodoCapitalizacionNum = 1;
-          break;
-        case "quincenal":
-          this.periodoCapitalizacionNum = 15;
-          break;
-        case "mensual":
-          this.periodoCapitalizacionNum = 30;
-          break;
-        case "bimestral":
-          this.periodoCapitalizacionNum = 60;
-          break;
-        case "trimestral":
-          this.periodoCapitalizacionNum = 90;
-          break;
-        case "cuatrimestral":
-          this.periodoCapitalizacionNum = 120;
-          break;
-        case "semestral":
-          this.periodoCapitalizacionNum = 180;
-          break;
-        case "anual":
-          this.periodoCapitalizacionNum = parseInt(this.diasPorYearModel);
-          break;
+      if (
+        this.tasaModel == "" ||
+        this.plazoTasaModel == "" ||
+        this.porcentajeTasa == "" ||
+        this.periodoCapitalizacionModel == "" ||
+        this.diasPorYearModel == ""
+      ) {
+        Swal.fire({
+          icon: "error",
+          title: "Datos incompletos",
+          text: "Llene los datos correctamente",
+        });
+      } else if (
+        parseFloat(this.porcentajeTasa) < 0 ||
+        parseFloat(this.porcentajeTasa) > 100
+      ) {
+        Swal.fire({
+          icon: "error",
+          title: "Error en el porcentaje de tasa",
+          text: "Debe ser un valor mayor a 0 y menor a 100",
+        });
+      } else {
+        switch (this.periodoCapitalizacionModel) {
+          case "diario":
+            this.periodoCapitalizacionNum = 1;
+            break;
+          case "quincenal":
+            this.periodoCapitalizacionNum = 15;
+            break;
+          case "mensual":
+            this.periodoCapitalizacionNum = 30;
+            break;
+          case "bimestral":
+            this.periodoCapitalizacionNum = 60;
+            break;
+          case "trimestral":
+            this.periodoCapitalizacionNum = 90;
+            break;
+          case "cuatrimestral":
+            this.periodoCapitalizacionNum = 120;
+            break;
+          case "semestral":
+            this.periodoCapitalizacionNum = 180;
+            break;
+          case "anual":
+            this.periodoCapitalizacionNum = parseInt(this.diasPorYearModel);
+            break;
 
-        default:
-          break;
+          default:
+            break;
+        }
+        switch (this.plazoTasaModel) {
+          case "diario":
+            this.plazoTasaNum = 1;
+            break;
+          case "quincenal":
+            this.plazoTasaNum = 15;
+            break;
+          case "mensual":
+            this.plazoTasaNum = 30;
+            break;
+          case "bimestral":
+            this.plazoTasaNum = 60;
+            break;
+          case "trimestral":
+            this.plazoTasaNum = 90;
+            break;
+          case "cuatrimestral":
+            this.plazoTasaNum = 120;
+            break;
+          case "semestral":
+            this.plazoTasaNum = 180;
+            break;
+          case "anual":
+            this.plazoTasaNum = parseInt(this.diasPorYearModel);
+            break;
+
+          default:
+            break;
+        }
+
+        const res = await CarteraService.addCartera(
+          this.$store.state.userId,
+          this.tasaModel,
+          parseFloat(this.porcentajeTasa),
+          this.plazoTasaModel,
+          this.plazoTasaNum,
+          parseInt(this.diasPorYearModel),
+          this.periodoCapitalizacionModel,
+          this.periodoCapitalizacionNum,
+          this.fechaDescuentoDate
+        );
+        this.carteraNueva = res;
+        this.buttonCrearCartera = true;
+        this.buttonCrearCosto = false;
       }
-      switch (this.plazoTasaModel) {
-        case "diario":
-          this.plazoTasaNum = 1;
-          break;
-        case "quincenal":
-          this.plazoTasaNum = 15;
-          break;
-        case "mensual":
-          this.plazoTasaNum = 30;
-          break;
-        case "bimestral":
-          this.plazoTasaNum = 60;
-          break;
-        case "trimestral":
-          this.plazoTasaNum = 90;
-          break;
-        case "cuatrimestral":
-          this.plazoTasaNum = 120;
-          break;
-        case "semestral":
-          this.plazoTasaNum = 180;
-          break;
-        case "anual":
-          this.plazoTasaNum = parseInt(this.diasPorYearModel);
-          break;
-
-        default:
-          break;
-      }
-
-      const res = await CarteraService.addCartera(
-        this.$store.state.userId,
-        this.tasaModel,
-        parseFloat(this.porcentajeTasa),
-        this.plazoTasaModel,
-        this.plazoTasaNum,
-        parseInt(this.diasPorYearModel),
-        this.periodoCapitalizacionModel,
-        this.periodoCapitalizacionNum,
-        this.fechaDescuentoDate
-      );
-      this.carteraNueva = res;
-      this.buttonCrearCartera = true;
-      this.buttonCrearCosto = false;
     },
     async agregarCosto() {
       if (
-        (this.motivoModel != "", this.valorCosto != "", this.modelMoneda != "")
+        this.motivoModel == "" ||
+        this.valorCosto == "" ||
+        this.modelMoneda == ""
       ) {
+        Swal.fire({
+          icon: "error",
+          title: "Datos incompletos",
+          text: "Llene los datos correctamente",
+        });
+      } else if (parseFloat(this.valorCosto) < 0) {
+        Swal.fire({
+          icon: "error",
+          title: "Dato incorrecto en el valor del Costo Inicial",
+          text: "El valor tiene que ser mayor o igual que 0",
+        });
+      } else {
         //CostoService.addCosto(this.carteraNueva.CCartera,this.motivoModel,parseInt(this.valorCosto),this.modelMoneda)
         this.costosLocales.push({
           CCartera: this.carteraNueva.CCartera,
@@ -829,12 +858,24 @@ export default {
       }
     },
     async agregarCostoF() {
-      this.buttonCrearCosto = true;
       if (
-        (this.motivoModelF != "",
-        this.valorCostoF != "",
-        this.modelMonedaF != "")
+        this.motivoModelF == "" ||
+        this.valorCostoF == "" ||
+        this.modelMonedaF == ""
       ) {
+        Swal.fire({
+          icon: "error",
+          title: "Datos incompletos",
+          text: "Llene los datos correctamente",
+        });
+      } else if (parseFloat(this.valorCosto) < 0) {
+        Swal.fire({
+          icon: "error",
+          title: "Dato incorrecto en el valor del Costo Final",
+          text: "El valor tiene que ser mayor o igual que 0",
+        });
+      } else {
+        this.buttonCrearCosto = true;
         this.costosLocalesF.push({
           CCartera: this.carteraNueva.CCartera,
           NMotivo: this.motivoModelF,
@@ -846,79 +887,97 @@ export default {
       }
     },
     async agregarFactura() {
-      if (this.buttonCrearCostoF == false) {
-        //this.buttonCrearCosto = true;
-        this.buttonCrearCostoF = true;
-        const res = await CostoService.addCosto(this.costosLocales);
-        const res2 = await CostoService.addCostoF(this.costosLocalesF);
+      if (
+        this.motivoModelF == "" ||
+        this.valorCostoF == "" ||
+        this.modelMonedaF == ""
+      ) {
+        Swal.fire({
+          icon: "error",
+          title: "Datos incompletos",
+          text: "Llene los datos correctamente",
+        });
+      } else if (parseFloat(this.valorCosto) <= 0) {
+        Swal.fire({
+          icon: "error",
+          title: "Dato incorrecto en el valor de la factura",
+          text: "El valor tiene que ser mayor que 0",
+        });
+      } else {
+        if (this.buttonCrearCostoF == false) {
+          //this.buttonCrearCosto = true;
+          this.buttonCrearCostoF = true;
+          const res = await CostoService.addCosto(this.costosLocales);
+          const res2 = await CostoService.addCostoF(this.costosLocalesF);
+        }
+
+        this.montoFactura = await Operaciones.ConversorFactura(
+          this.valorFactura,
+          this.modelMonedaFactura
+        );
+
+        const NumTEA = Operaciones.NumTEA(
+          this.tasaModel,
+          parseFloat(this.porcentajeTasa),
+          this.plazoTasaNum,
+          this.periodoCapitalizacionNum
+        );
+        const NumPlazoDescuento = Operaciones.NumPlazoDescuento(
+          this.date2,
+          this.fechaDescuentoDate
+        );
+        const NumTed = Operaciones.NumTED(NumTEA, NumPlazoDescuento);
+
+        const NumD360 = Operaciones.NumD360(NumTed);
+
+        const NumDescuento = Operaciones.NumDescuento(
+          parseFloat(this.montoFactura),
+          NumD360
+        );
+
+        const NumVNeto = Operaciones.NumVNeto(
+          parseFloat(this.montoFactura),
+          NumDescuento
+        );
+
+        const NumVRecibido = await Operaciones.NumVRecibido(
+          NumVNeto,
+          this.costosLocales,
+          0
+        );
+
+        const NumVEntregado = await Operaciones.NumVEntregado(
+          parseFloat(this.montoFactura),
+          this.costosLocalesF,
+          0
+        );
+
+        const NumTCEA = Operaciones.NumTCEA(
+          NumVEntregado,
+          NumVRecibido,
+          parseInt(this.diasPorYearModel),
+          NumPlazoDescuento
+        );
+
+        this.facturasLocales.push({
+          DFechaEmision: this.date1,
+          DFechaPago: this.date2,
+          NumMonto: parseFloat(this.montoFactura),
+          NMoneda: this.modelMonedaFactura,
+          CCartera: this.carteraNueva.CCartera,
+          NumTEA: NumTEA,
+          NumTED: NumTed,
+          NumD360: NumD360,
+          NumDescuento: NumDescuento,
+          NumVNeto: NumVNeto,
+          NumVRecibido: NumVRecibido,
+          NumVEntregado: NumVEntregado,
+          NumTCEA: NumTCEA,
+          NumPlazoDescuento: NumPlazoDescuento,
+        });
+
+        this.buttonResultado = false;
       }
-
-      this.montoFactura = await Operaciones.ConversorFactura(
-        this.valorFactura,
-        this.modelMonedaFactura
-      );
-
-      const NumTEA = Operaciones.NumTEA(
-        this.tasaModel,
-        parseFloat(this.porcentajeTasa),
-        this.plazoTasaNum,
-        this.periodoCapitalizacionNum
-      );
-      const NumPlazoDescuento = Operaciones.NumPlazoDescuento(
-        this.date2,
-        this.fechaDescuentoDate
-      );
-      const NumTed = Operaciones.NumTED(NumTEA, NumPlazoDescuento);
-
-      const NumD360 = Operaciones.NumD360(NumTed);
-
-      const NumDescuento = Operaciones.NumDescuento(
-        parseFloat(this.montoFactura),
-        NumD360
-      );
-
-      const NumVNeto = Operaciones.NumVNeto(
-        parseFloat(this.montoFactura),
-        NumDescuento
-      );
-
-      const NumVRecibido = await Operaciones.NumVRecibido(
-        NumVNeto,
-        this.costosLocales,
-        0
-      );
-
-      const NumVEntregado = await Operaciones.NumVEntregado(
-        parseFloat(this.montoFactura),
-        this.costosLocalesF,
-        0
-      );
-
-      const NumTCEA = Operaciones.NumTCEA(
-        NumVEntregado,
-        NumVRecibido,
-        parseInt(this.diasPorYearModel),
-        NumPlazoDescuento
-      );
-
-      this.facturasLocales.push({
-        DFechaEmision: this.date1,
-        DFechaPago: this.date2,
-        NumMonto: parseFloat(this.montoFactura),
-        NMoneda: this.modelMonedaFactura,
-        CCartera: this.carteraNueva.CCartera,
-        NumTEA: NumTEA,
-        NumTED: NumTed,
-        NumD360: NumD360,
-        NumDescuento: NumDescuento,
-        NumVNeto: NumVNeto,
-        NumVRecibido: NumVRecibido,
-        NumVEntregado: NumVEntregado,
-        NumTCEA: NumTCEA,
-        NumPlazoDescuento: NumPlazoDescuento,
-      });
-
-      this.buttonResultado = false;
     },
     async resultado() {
       this.buttonLimpiar = true;

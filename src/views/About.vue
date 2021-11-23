@@ -10,8 +10,10 @@
         </v-row>
         <v-row justify="start">
           <p>
-            FacturaXpress es una aplicación web que le ofrece al usuario
-            administrar una cartera de descuento de facturas.
+            Es una aplicación web que te permite descontar una factura o cartera
+            de facturas según tasas y plazos que son colocados por el mismo
+            usuario que corresponderían a las brindadas por alguna entidad
+            financiera.
           </p>
         </v-row>
         <v-row justify="start">

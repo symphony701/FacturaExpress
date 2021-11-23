@@ -678,8 +678,8 @@ export default {
       { text: "Gastos de administración", value: "gastos_administracion" },
       { text: "Otros gastos", value: "otros" },
     ],
-    valorCosto: 0,
-    valorCostoF: 0,
+    valorCosto: "0",
+    valorCostoF: "0",
     modelMoneda: "",
     modelMonedaF: "",
     monedaOptions: [
@@ -709,7 +709,7 @@ export default {
     montoFactura: 0,
     valorTotalARecibir: 0,
     valorTotalTCEA: 0,
-    valorFactura: 0,
+    valorFactura: "0",
   }),
   mounted: async function () {
     if (
@@ -834,6 +834,7 @@ export default {
         this.valorCosto == "" ||
         this.modelMoneda == ""
       ) {
+        console.log(this.motivoModel, this.valorCosto, this.modelMoneda);
         Swal.fire({
           icon: "error",
           title: "Datos incompletos",
@@ -893,7 +894,7 @@ export default {
           title: "Datos incompletos",
           text: "Llene los datos correctamente",
         });
-      } else if (parseFloat(this.modelMonedaFactura) <= 0) {
+      } else if (parseFloat(this.valorFactura) <= 0.0) {
         Swal.fire({
           icon: "error",
           title: "Dato incorrecto en el valor de la factura",

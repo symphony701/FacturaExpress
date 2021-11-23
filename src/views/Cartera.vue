@@ -868,7 +868,7 @@ export default {
           title: "Datos incompletos",
           text: "Llene los datos correctamente",
         });
-      } else if (parseFloat(this.valorCosto) < 0) {
+      } else if (parseFloat(this.valorCostoF) < 0) {
         Swal.fire({
           icon: "error",
           title: "Dato incorrecto en el valor del Costo Final",

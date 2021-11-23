@@ -887,17 +887,13 @@ export default {
       }
     },
     async agregarFactura() {
-      if (
-        this.motivoModelF == "" ||
-        this.valorCostoF == "" ||
-        this.modelMonedaF == ""
-      ) {
+      if (this.valorFactura == "" || this.modelMonedaFactura == "") {
         Swal.fire({
           icon: "error",
           title: "Datos incompletos",
           text: "Llene los datos correctamente",
         });
-      } else if (parseFloat(this.valorCosto) <= 0) {
+      } else if (parseFloat(this.modelMonedaFactura) <= 0) {
         Swal.fire({
           icon: "error",
           title: "Dato incorrecto en el valor de la factura",

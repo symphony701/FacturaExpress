@@ -72,48 +72,76 @@ class Operaciones {
 
     }
 
-    arregloFlujo(valorTotalaRecibir, arregloFacturas) {
-        let arregloflujo = []
-        arregloflujo.push(valorTotalaRecibir)
-        for (let factura of arregloFacturas) {
-            arregloflujo.push((factura.NumVEntregado) * -1);
-        }
-        return arregloflujo;
-    }
 
-    NumTCEATotal(arregloflujo) {
-        const MAX_ITER = 20;
-        const EXCEL_EPSILON = 0.0000001;
 
-        let x = 0.1;
-        let iter = 0;
-        while (iter++ < MAX_ITER) {
 
-            let x1 = 1.0 + x;
-            let fx = 0.0;
-            let dfx = 0.0;
-            for (let i = 0; i < arregloflujo.length; i++) {
-                let v = arregloflujo[i];
-                let x1_i = Math.pow(x1, i);
-                fx += v / x1_i;
-                let x1_i1 = x1_i * x1;
-                dfx += -i * v / x1_i1;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*
+        arregloFlujo(valorTotalaRecibir, arregloFacturas) {
+            let arregloflujo = []
+            arregloflujo.push(valorTotalaRecibir)
+            for (let factura of arregloFacturas) {
+                arregloflujo.push((factura.NumVEntregado) * -1);
             }
-            let new_x = x - fx / dfx;
-            let epsilon = Math.abs(new_x - x);
+            return arregloflujo;
+        }
 
-            if (epsilon <= EXCEL_EPSILON) {
-                if (x == 0.0 && Math.abs(new_x) <= EXCEL_EPSILON) {
-                    return 0.0;
-                } else {
-                    return new_x * 100;
+        NumTCEATotal(arregloflujo) {
+            const MAX_ITER = 20;
+            const EXCEL_EPSILON = 0.0000001;
+
+            let x = 0.1;
+            let iter = 0;
+            while (iter++ < MAX_ITER) {
+
+                let x1 = 1.0 + x;
+                let fx = 0.0;
+                let dfx = 0.0;
+                for (let i = 0; i < arregloflujo.length; i++) {
+                    let v = arregloflujo[i];
+                    let x1_i = Math.pow(x1, i);
+                    fx += v / x1_i;
+                    let x1_i1 = x1_i * x1;
+                    dfx += -i * v / x1_i1;
                 }
-            }
-            x = new_x;
-        }
-        return x;
-    }
+                let new_x = x - fx / dfx;
+                let epsilon = Math.abs(new_x - x);
 
+                if (epsilon <= EXCEL_EPSILON) {
+                    if (x == 0.0 && Math.abs(new_x) <= EXCEL_EPSILON) {
+                        return 0.0;
+                    } else {
+                        return new_x * 100;
+                    }
+                }
+                x = new_x;
+            }
+            return x;
+        }
+    */
 
 }
 export default new Operaciones();

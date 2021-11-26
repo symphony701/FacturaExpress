@@ -465,7 +465,7 @@
                     <h2>Valor total a recibir: {{ valorTotalARecibir }}</h2>
                   </v-col>
                   <v-col class="d-flex justify-center" cols="3">
-                    <h2>TCEA(%): {{ valorTotalTCEA }}</h2>
+                    <h2>TCEA Total(%): {{ valorTotalTCEA }}</h2>
                   </v-col>
                 </v-row>
                 <v-row justify="space-around">
